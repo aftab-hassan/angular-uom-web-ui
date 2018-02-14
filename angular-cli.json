@@ -1,0 +1,59 @@
+{
+  "project": {
+    "version": "1.0.0-beta.24",
+    "name": "uom-web-ui-v-n"
+  },
+  "apps": [
+    {
+      "root": "src",
+      "outDir": "dist/client",
+      "assets": [
+        "assets",
+        "favicon.ico",
+        "noop.html",
+        "../iisnode.yml",
+        "../web.config"
+      ],
+      "index": "index.handlebars",
+      "main": "main.ts",
+      "test": "test.ts",     
+      "tsconfig": "tsconfig.json",
+      "prefix": "app",
+      "mobile": false,
+      "styles": [
+        "./styles/main.css"
+      ],
+      "scripts": [],
+      "environments": {
+        "source": "environments/environment.ts",
+        "dev": "environments/environment.ts",
+        "prod": "environments/environment.prod.ts"
+      }
+    }
+  ],
+  "addons": [],
+  "packages": [],
+  "e2e": {
+  },
+  "test": {
+    "karma": {
+      "config": "./karma.conf.js"
+    }
+  },
+  "defaults": {
+    "styleExt": "css",
+    "prefixInterfaces": false,
+    "inline": {
+      "style": false,
+      "template": false
+    },
+    "spec": {
+      "class": false,
+      "component": true,
+      "directive": true,
+      "module": false,
+      "pipe": true,
+      "service": true
+    }
+  }
+}

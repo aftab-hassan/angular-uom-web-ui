@@ -1,0 +1,183 @@
+<div class="container">
+    <div class="alert alert-error" *ngIf="(errorMessage$ | async)">{{(errorMessage$ | async)}}</div>
+</div>
+<div *ngIf="(isLoading$ | async) || (isSubmitting$ | async)" class="spinner-container"><i class="fa fa-spinner fa-spin" aria-hidden="true"></i></div>
+<div class="container">
+    <div>
+        <h2>{{ isNew && 'Add new organization' || (org$ | async)?.organizationName }} </h2>
+    </div>
+    
+    <form *ngIf="(isFormBuilt$ | async)" [formGroup]="orgsForm" (ngSubmit)="submitForm(orgsForm.value)">
+        <div *ngIf="!isNew">
+            <span *ngIf="(org$ | async)?.pendingRegisteration" class="pending-registeration"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>Pending Registration</span>
+            <i class="pull-right">ID = {{ (org$ | async)?.id }}</i>
+        </div>
+        <div class="clearfix"></div>
+        <div class="form-container">
+            <div class="row">
+                <div class="col-xs-8">
+                    <div class="form-group">
+                        <i>Organization name</i>
+                        <input formControlName="organizationName" type="text" class="form-control" placeholder="organization name ...">
+                    </div>
+                    <div *ngIf="isNew" class="form-group">
+                        <i>Organization AAD Id</i>
+                        <input formControlName="id" type="text" class="form-control" placeholder="organization AAD ID ...">
+                    </div>
+                    <div class="form-group">
+                        <i>Location</i>
+                        <input type="text" formControlName="location" class="form-control" placeholder="location ...">
+                    </div>
+                    <div class="form-group">
+                        <i>Contact info</i>
+                        <input type="text" formControlName="contact" class="form-control" placeholder="contact ...">
+                    </div>
+                </div>
+                <div *ngIf="isAdminApp" class="col-xs-4">
+                    <div class="form-group">
+                        <i>Type</i>
+                        <select formControlName="customerType" class="form-control">
+                            <option value="EXTERNAL">External</option>
+                            <option value="INTERNAL">Internal</option>
+                        </select>
+                    </div>
+                    <div *ngIf="!isNew" class="form-check has-warning">
+                        <label class="form-check-label">
+                            <input formControlName="status" type="checkbox" class="form-check-input">
+                            Disabled
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div>                
+                <div class="label-closer"><i>Administrators</i></div>
+                <div class="row" formArrayName="admins">
+                    <div class="col-xs-12">
+                        <div *ngFor="let adminCtr of orgsForm.controls.admins.controls; let i = index;">
+                            <div class="row compact-row" [formGroupName]="i">
+                                <div class="col-xs-4">
+                                    <div class="form-group">
+                                        <input type="text" formControlName="name" class="form-control"  placeholder="admin name ...">
+                                    </div>
+                                </div>
+                                <div class="col-xs-8">
+                                    <div class="icon-container">
+                                        <div class="form-group">
+                                            <input type="email" formControlName="email" class="form-control" placeholder="admin email ...">
+                                        </div>
+                                        <div *ngIf="(userCanEdit$ | async) && (orgsForm.controls.admins.controls.length > 1)" class="icon-item">
+                                            <a href="javascript:;" (click)="removeAdmin(i)"><i class="fa fa-minus-circle"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="(userCanEdit$ | async) && orgsForm.controls.admins.controls.length < 10" class="row compact-row">
+                            <div class="col-xs-1">
+                                <div class="form-group">
+                                    <a href="javascript:;" (click)="addAdmin()"><i class="fa fa-plus-circle"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="label-closer"><i>Tags</i></div>
+                <div class="row" formArrayName="tags">
+                    <div class="col-xs-12">
+                        <div *ngFor="let tagCtr of orgsForm.controls.tags.controls; let i = index;">
+                            <div class="row compact-row" [formGroupName]="i">
+                                <div class="col-xs-4">
+                                    <div class="form-group">
+                                        <input type="text" formControlName="name" class="form-control" placeholder="tag name ...">
+                                    </div>
+                                </div>
+                                <div class="col-xs-8">
+                                    <div class="icon-container">
+                                        <div class="form-group">
+                                            <input type="text" formControlName="value" class="form-control" placeholder="tag value ...">
+                                        </div>
+                                        <div *ngIf="(userCanEdit$ | async)" class="icon-item">
+                                            <a href="javascript:;" (click)="removeTag(i)"><i class="fa fa-minus-circle"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="(userCanEdit$ | async) && orgsForm.controls.tags.controls.length < 10" class="row compact-row">
+                            <div class="col-xs-1">
+                                <div class="form-group">
+                                    <a href="javascript:;" (click)="addTag()"><i class="fa fa-plus-circle"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div><i>Applications</i></div>
+                        <div *ngIf="isAdminApp" formArrayName="apps">
+                            <div class="row compact-row" *ngFor="let appCtr of orgsForm.controls.apps.controls; let i = index;">
+                                <div class="col-xs-12" [formGroupName]="i">
+                                    <div class="form-check has-warning">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" formControlName="{{(applications$ | async) && (applications$ | async)[i].id}}" class="form-check-input">
+                                            {{(applications$ | async) && (applications$ | async)[i].name}}
+                                        </label>
+                                    </div>
+                                    <div *ngIf="appCtr.controls.insightApps" formArrayName="insightApps">
+                                        <div class="container row compact-row" *ngFor="let insightAppCtr of appCtr.controls.insightApps.controls; let j = index;">
+                                            <div class="col-xs-12" [formGroupName]="j">
+                                                <div class="form-check has-warning">
+                                                    <label class="form-check-label">
+                                                        <input type="checkbox" formControlName="{{(insightApplications$ | async) && ((insightApplications$ | async)[j].alias + '/' + (insightApplications$ | async)[j].version)}}" class="form-check-input">
+                                                        {{(insightApplications$ | async) && ((insightApplications$ | async)[j].title + ' - ' + (insightApplications$ | async)[j].version)}}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                            
+                        </div>
+                        <div *ngIf="!isAdminApp">
+                            <div *ngIf="(hasSelectedApps$ | async)">
+                                <div *ngFor="let app of (applications$ | async)">
+                                    <div class="row compact-row" *ngIf="app.selected">
+                                        <div class="col-xs-12">
+                                            <h4><i class="fa fa-check-circle" aria-hidden="true"></i>{{app.name}}</h4>
+                                        </div>
+                                        <div *ngIf="app.isInsightsApp">
+                                            <div class="container row compact-row" *ngFor="let insightApp of (insightApplications$ | async)">
+                                                <div class="col-xs-12">
+                                                    <h4 class="container"><i class="fa fa-check-circle" aria-hidden="true"></i>{{insightApp.title}} - {{insightApp.version}}</h4>
+                                                </div>                   
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div *ngIf="!(hasSelectedApps$ | async)">
+                                <h4>[No application enabled]</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row button-group">
+            <div class="col-xs-12">
+                <button *ngIf="(userCanEdit$ | async)" type="submit" class="btn btn-primary" [disabled]="orgsForm.invalid || orgsForm.pristine || (isSubmitting$ | async)">
+                    <i>Submit</i>
+                </button>
+                <a *ngIf="isAdminApp" class="btn btn-primary" [routerLink]="['/orgs']"><i>Cancel</i></a>
+            </div>
+        </div>
+    </form>
+    <div class="confirmation-message" [ngClass]="{'show-message': (isAdminApp && (successMessage$ | async))}">{{(successMessage$ | async)}}</div>
+</div>
+<modal-comp *ngIf="isAdminApp" #modal (close)="closeModal($event)"></modal-comp>

@@ -1,0 +1,102 @@
+<div *ngIf="(isLoadingDeleteApplication$ | async)" class="spinner-container"><i class="fa fa-spinner fa-spin" aria-hidden="true"></i></div>
+
+<div class="container">
+  <div class="alert alert-success" *ngIf="(uploadApplicationSuccessMessage$ | async)">{{(uploadApplicationSuccessMessage$ | async)}}</div>
+</div>
+
+<div class="container">
+  <div class="alert alert-success" *ngIf="(deleteApplicationSuccessMessage$ | async)">{{deleteApplicationSuccessMessage$|async}}</div>
+</div>
+
+<div class="container">
+    <div class="alert alert-error" *ngIf="(deleteApplicationErrorMessage$ | async)">{{deleteApplicationErrorMessage$ | async}}</div>
+</div>
+<div class="container">
+
+    <button type="submit" class="btn btn-primary pull-right" [routerLink]="['/insightApplications/upload']">
+      <i class="icon-ico_check3_lg"></i>
+      <i>Upload Application</i>
+    </button>
+
+    <div>
+        <h3>Insight Applications</h3>
+    </div>
+    <div [hidden]="!(applications$ | async)?.length" class="row">
+        <div class="col-xs-12">
+            <input type="text" class="form-control" #searchText placeholder="Filter applications" (keyup)="($event.keyCode === 27) && (searchText.value='')"/>
+        </div>
+    </div>
+
+    <div class="items-list">
+        <div class="row items-list-header hidden-xs">
+            <div class="col-xs-3" [ngClass]="getSortByClass((sortInfo$ | async), 'alias')">
+                <a href="javascript:;" (click)="sort('alias')">Alias
+                    <i class="fa fa-sort" [ngClass]="getSortDirectionClass((sortInfo$ | async), 'alias')"></i>
+                </a>
+            </div>
+            <div class="col-xs-2">
+                Version
+            </div>
+            <div class="col-xs-2" [ngClass]="getSortByClass((sortInfo$ | async), 'title')">
+                <a href="javascript:;" (click)="sort('title')">Title
+                    <i class="fa fa-sort" [ngClass]="getSortDirectionClass((sortInfo$ | async), 'title')"></i>
+                </a>
+            </div>
+            <div class="col-xs-3" [ngClass]="getSortByClass((sortInfo$ | async), 'description')">
+                <a href="javascript:;" (click)="sort('description')">Description
+                    <i class="fa fa-sort" [ngClass]="getSortDirectionClass((sortInfo$ | async), 'description')"></i>
+                </a>
+            </div>
+            <div class="col-xs-1" [ngClass]="getSortByClass((sortInfo$ | async), 'biengine')">
+              <a href="javascript:;" (click)="sort('biengine')">BI Engine
+                <i class="fa fa-sort" [ngClass]="getSortDirectionClass((sortInfo$ | async), 'biengine')"></i>
+              </a>
+            </div>
+            <div class="col-xs-1">
+              Action
+            </div>
+        </div>
+        <div class="items-list-content">
+          <div *ngIf="(applications$ | async)">
+            <div class="row" *ngFor="let app of applications$ | async | insightApplicationsFilterPipe:searchText.value">
+              <div class="col-xs-12 col-sm-3 row sub-row">
+                <div class="col-xs-2 visible-xs"><label>Alias</label></div>
+                <div class="col-xs-9 col-sm-12">{{app.alias}}</div>
+              </div>
+              <div class="col-xs-12 col-sm-2 row sub-row">
+                <div class="col-xs-2 visible-xs"><label>Version</label></div>
+                <div class="col-xs-9 col-sm-12">{{app.version}}</div>
+              </div>
+              <div class="col-xs-12 col-sm-2 row sub-row">
+                <div class="col-xs-2 visible-xs"><label>Title</label></div>
+                <div class="col-xs-9 col-sm-12">{{app.title}}</div>
+              </div>
+              <div class="col-xs-12 col-sm-3 row sub-row">
+                <div class="col-xs-2 visible-xs"><label>Description</label></div>
+                <div class="col-xs-9 col-sm-12">{{app.description}}</div>
+              </div>
+              <div class="col-xs-12 col-sm-1 row sub-row">
+                <div class="col-xs-2 visible-xs"><label>BI Engine</label></div>
+                <div *ngIf="app.biEngine == 'powerbi'">
+                  <div class="col-xs-9 col-sm-12">Power BI</div>
+                </div>
+                <div *ngIf="app.biEngine == 'sisense' || app.biEngine == null">
+                  <div class="col-xs-9 col-sm-12">Sisense</div>
+                </div>
+              </div>
+              <div class="col-xs-12 col-sm-1 row sub-row">
+                <div class="col-xs-2 visible-xs"><label>Action</label></div>
+                <button class="btn btn-primary pull-right" (click)="handleDeleteApplication(app)">Delete</button>
+              </div>
+            </div>
+          </div>
+
+            <div class="spacings" *ngIf="!(isLoading$ | async) && !(applications$ | async)?.length">
+                There are no applications
+            </div>
+            <div class="spacings" *ngIf="(isLoading$ | async)">
+                <i class="fa fa-spinner fa-spin fa-small" aria-hidden="true"></i> Loading applications
+            </div>
+        </div>
+    </div>
+</div>

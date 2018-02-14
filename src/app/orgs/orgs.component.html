@@ -1,0 +1,78 @@
+<div class="container">
+    <div class="alert alert-error" *ngIf="(errorMessage$ | async)">{{(errorMessage$ | async)}}</div>
+</div>
+<div class="container">
+    <div>
+        <h3>Organizations</h3>
+    </div>
+    <div [hidden]="!(orgs$ | async)?.length" class="row">
+        <div class="col-xs-12">
+            <input type="text" class="form-control" #searchText placeholder="Filter organizations" (keyup)="($event.keyCode === 27) && (searchText.value='')"/>
+        </div>
+    </div>
+    <div class="items-list">
+        <div class="row items-list-header hidden-xs">         
+            <div class="col-xs-3" [ngClass]="getSortByClass((sortInfo$ | async), 'organizationName')">
+                <a href="javascript:;" (click)="sort('organizationName')">Name 
+                    <i class="fa fa-sort" [ngClass]="getSortDirectionClass((sortInfo$ | async), 'organizationName')"></i>
+                </a>
+            </div>
+            <div class="col-xs-2" [ngClass]="getSortByClass((sortInfo$ | async), 'location')">
+                <a href="javascript:;" (click)="sort('location')">Location 
+                    <i class="fa fa-sort" [ngClass]="getSortDirectionClass((sortInfo$ | async), 'location')"></i>
+                </a>
+            </div>
+            <div class="col-xs-2" [ngClass]="getSortByClass((sortInfo$ | async), 'statusText')">
+                <a href="javascript:;" (click)="sort('statusText')">Status 
+                    <i class="fa fa-sort" [ngClass]="getSortDirectionClass((sortInfo$ | async), 'statusText')"></i>
+                </a>
+            </div>
+            <div class="col-xs-2" [ngClass]="getSortByClass((sortInfo$ | async), 'contact')">
+                <a href="javascript:;" (click)="sort('contact')">Contact 
+                    <i class="fa fa-sort" [ngClass]="getSortDirectionClass((sortInfo$ | async), 'contact')"></i>
+                </a>
+            </div>
+            <div class="col-xs-3">Tag</div>
+        </div>
+        <div class="items-list-content">
+            <div *ngIf="(orgs$ | async)">
+                <div class="row" *ngFor="let o of orgs$ | async | orgsFilterPipe:searchText.value" [routerLink]="['/orgs/' + o.id + '/edit' ]" [ngClass]="{'pending-registeration': o.pendingRegisteration}">
+                    <div class="col-xs-12 col-sm-3 row sub-row">
+                        <div class="col-xs-3 visible-xs"><label>Name</label></div>
+                        <div class="col-xs-9 col-sm-12">{{o.organizationName}}</div>                   
+                    </div>
+                    <div class="col-xs-12 col-sm-2 row sub-row">
+                        <div class="col-xs-3 visible-xs"><label>Location</label></div>
+                        <div class="col-xs-9 col-sm-12">{{o.location}}</div>    
+                    </div>
+                    <div class="col-xs-12 col-sm-2 row sub-row" [ngClass]="{'enabled-org': o.enabled, 'disabled-org': !o.enabled }">
+                        <div class="col-xs-3 visible-xs"><label>Status</label></div>
+                        <div class="col-xs-9 col-sm-12">{{o.statusText}}</div>  
+                    </div>
+                    <div class="col-xs-12 col-sm-2 row sub-row">
+                        <div class="col-xs-3 visible-xs"><label>Contact</label></div>
+                        <div class="col-xs-9 col-sm-12">{{o.contact}}</div>  
+                    </div>
+                    <div class="col-xs-12 col-sm-3 hidden-xs">
+                        <div *ngFor="let t of o.tags">
+                            {{t.name}}: {{t.value}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="spacings" *ngIf="!(isLoading$ | async) && !(orgs$ | async)?.length">
+                There are no organizations
+            </div>
+            <div class="spacings" *ngIf="(isLoading$ | async)">
+                <i class="fa fa-spinner fa-spin fa-small" aria-hidden="true"></i> Loading organizations
+            </div>
+        </div>
+    </div>
+    <div class="button-group row">
+        <div class="col-xs-12">
+            <a *ngIf="userCanEdit$ | async" class="btn btn-primary" [routerLink]="['/orgs/add']">
+                <i>Add New Org</i>
+            </a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+    <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+    <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+    <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+    <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">       
+        <title>GE Healthcare</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+        <base href="/">  
+
+        <!-- This conditional IF may not be read by IE, but currently it breaks validation. -->
+        <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><![endif]-->
+
+        <!-- For third-generation iPad with high-resolution Retina display: -->
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ cdn_path }}/hdx/components/brandkit/favicon/favicon-144px.png">
+
+        <!-- For iPhone with high-resolution Retina display: -->
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ cdn_path }}/hdx/components/brandkit/favicon/favicon-114px.png">
+
+        <!-- For first- and second-generation iPad: -->
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ cdn_path }}/hdx/components/brandkit/favicon/favicon-72px.png">
+
+        <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+        <link rel="apple-touch-icon-precomposed" href="{{ cdn_path }}/hdx/components/brandkit/favicon/favicon.png">
+
+        <link rel="icon" href="{{ cdn_path }}/hdx/components/brandkit/favicon/favicon.ico">
+
+        <link id="theme-styles" href="{{ cdn_path }}/hdx/css/hds.css" rel="stylesheet" type="text/css">
+        <link id="theme-styles-responsive"  href="{{ cdn_path }}/hdx/css/responsive.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="{{ cdn_path }}/font-awesome/css/font-awesome.min.css">
+        <!--[if lt IE 9]>
+        <link id="theme-ie" href="{{ cdn_path }}/hdx/css/ie.css" rel="stylesheet" type="text/css">
+        <![endif]-->
+
+        <!--[if IE 9]>
+        <link id="theme-ie9" href="{{ cdn_path }}/hdx/css/ie9.css" rel="stylesheet" type="text/css">
+        <![endif]-->
+
+        <script type="text/javascript">
+            var __clientSettings = {{{ clientSettings }}};    
+            
+            var authIdCallback;
+            function __addAuthIdCallback(cb){
+                authIdCallback = cb;
+            }
+            function __setAuthId(idToken, href){
+                authIdCallback && authIdCallback(idToken, href);
+            }
+
+            var authCodeCallback;
+            function __addAuthCodeCallback(cb){
+                authCodeCallback = cb;
+            }
+            function __setAuthCode(code, href){
+                authCodeCallback && authCodeCallback(code, href);
+            }
+        </script>
+            
+        <script type="text/javascript" src="{{ cdn_path }}/hdx/components/respond/respond.min.js"></script>
+        <script type="text/javascript" src="{{ cdn_path }}/hdx/components/modernizr/modernizr.js"></script>
+        <script type="text/javascript" src="{{ cdn_path }}/hdx/components/requirejs/require.js"></script>
+        <script type="text/javascript" src="{{ cdn_path }}/hdx/components/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="{{ cdn_path }}/hdx/js/require.config.js"></script>
+        <script type="text/javascript">
+            require.config({ baseUrl: '{{ cdn_path }}/hdx' });
+        </script>
+        <script type="text/javascript">
+            // Preload JS libraries and exec page scripts
+            require([
+                'jquery',
+                'ge-bootstrap',
+                'navbar-offcanvas'
+            ], function($) {});
+        </script>
+        <style> iframe.auth{ visibility:hidden; position:absolute; height:0px ;width:0px; } </style>
+    </head>
+    <body>
+        <app-root><div style="margin: 16px;">Loading...</div></app-root> 
+        <iframe id="ifrmAuthId" src="" width="0" height="0" class="auth"></iframe>
+        <iframe id="ifrmAuthCode" src="" width="0" height="0" class="auth"></iframe>
+    </body>
+</html>

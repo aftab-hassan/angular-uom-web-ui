@@ -1,0 +1,43 @@
+<div class="container">
+    <div class="alert alert-error" *ngIf="(errorMessage$ | async)">{{(errorMessage$ | async)}}</div>
+</div>
+<div *ngIf="(isSubmitting$ | async)" class="spinner-container"><i class="fa fa-spinner fa-spin" aria-hidden="true"></i></div>
+<div class="container">
+    <div><h2>Upload Insight Application</h2></div>
+    <form (ngSubmit)="submitForm()">
+        <div class="clearfix"></div>
+        <div class="form-container">
+            <div class="row">
+                <div class="col-xs-8">
+                    <div class="form-group">
+                        <label>Application package</label>
+                        <input type="file" name="file" accept="application/zip" (change)="setPackage($event);" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+          Enter Application Alias<br>
+          <input type="text" (change)="setApplicationName($event);" required><br>
+          Enter Version Number<br>
+          <input type="text" (change)="setVersionNumber($event);" required>
+          <br>
+
+          <input type="radio" name="dataSourceType" value="connected" (click)="handleClickSisense()" required> Sisense&nbsp;&nbsp;
+          <input type="radio" name="dataSourceType" value="static" (click)="handleClickPowerBi();"> Power BI
+        </div>
+
+        <div class="btn-group pull-left">
+          <button type="submit" class="btn btn-primary" [disabled]="(!staticFileSelected || !applicationNamePresent || !versionNumberPresent)">
+            <i class="icon-ico_check3_lg"></i>
+            <i>Upload</i>
+          </button>
+          <button class="btn btn-primary" [routerLink]="['/insightApplications']">
+            <i class="icon-remove-sign"></i>
+            <i>Cancel</i>
+          </button>
+        </div>
+    </form>
+    <div class="hidden">{{isSubmitSuccessful$ | async}}</div>
+</div>

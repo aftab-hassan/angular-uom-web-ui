@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <script type="text/javascript">
+        var params  = window.location.search.substring(1).split('&').map(function(q){ return q.split('=') });
+        var state = params.filter(function(p){ return p[0].toLowerCase() === 'state' })[0][1];
+        
+        if(state === 'auth_id'){
+            var idResult = params.filter(function(p){ return p[0].toLowerCase() === 'id_token' });
+            var idToken = idResult.length && decodeURIComponent(idResult[0][1]) || '';
+            window.parent.__setAuthId(idToken, window.location.href);
+        } else if(state === 'auth_code'){
+            var codeResult = params.filter(function(p){ return p[0].toLowerCase() === 'code' });
+            var code = codeResult.length && decodeURIComponent(codeResult[0][1]) || '';
+            window.parent.__setAuthCode(code, window.location.href);
+        }
+
+    </script>    
+</head>
+<body>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<div>
+  <header-comp [userInfo]="userInfo$ | async">
+    <header-title>{{ (isAdminApp$ | async) && 'GE' || 'Org' }} Admin</header-title>
+  </header-comp>
+  <div class="main-container">
+    <div *ngIf="(userInfo$ | async) && (isAdminApp$ | async)" class="container">
+      <ul class="nav nav-tabs">
+          <li [ngClass]="{'active': (selectedTab$ | async) === 'orgs'}"><a [routerLink]="['/orgs']" (click)="selectTab('orgs')">Organizations</a></li>
+          <li [ngClass]="{'active': (selectedTab$ | async) === 'apps'}"><a [routerLink]="['/insightApplications']" (click)="selectTab('apps')">Insight Applications</a></li>
+      </ul>
+    </div>
+    <router-outlet></router-outlet>
+  </div>
+</div>
